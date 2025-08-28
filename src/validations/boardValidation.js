@@ -17,21 +17,7 @@ const createNew = async (req, res, next) => {
       "string.max": "Title length must be less than or equal to 50 chars long",
       "string.trim": "Title must not have leading or trailing whitespce",
     }),
-    description: Joi.string()
-      .required()
-      .min(3)
-      .max(255)
-      .trim()
-      .strict()
-      .messages({
-        "any.required": "Description is required",
-        "string.empty": "Description is not allowed to be empty",
-        "string.min": "Description length must be at least 3 characters long",
-        "string.max":
-          "Description length must be less than or equal to 255 chars long",
-        "string.trim":
-          "Description must not have leading or trailing whitespce",
-      }),
+    description: Joi.string().required().min(3).max(255).trim().strict(),
   });
 
   try {
