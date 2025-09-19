@@ -8,14 +8,16 @@ const createNew = async (reqBody) => {
     };
 
     const createdColumn = await columnModel.createNew(newColumn);
-    const getNewColumn = await columnModel.findOneById(createdColumn.insertedId);
+    const getNewColumn = await columnModel.findOneById(
+      createdColumn.insertedId
+    );
 
     if (getNewColumn) {
       // Xử lí cấu trúc ở đây trước khi dữ liệu được trả về
-      getNewColumn.cards = []
+      getNewColumn.cards = [];
 
       // Cập nhật mảng columnOrderIds trong collection boards
-      await boardModel.pushColumnOrderIds(getNewColumn)
+      await boardModel.pushColumnOrderIds(getNewColumn);
     }
 
     return getNewColumn;
@@ -24,6 +26,21 @@ const createNew = async (reqBody) => {
   }
 };
 
+const update = async (columnId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now(),
+    };
+    const updatedColumn = await columnModel.update(columnId, updateData);
+
+    return updatedColumn;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const columnService = {
   createNew,
+  update,
 };
