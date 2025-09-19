@@ -57,6 +57,7 @@ const update = async (req, res, next) => {
     );
   }
 };
+
 export const boardValidation = {
   createNew,
   update,
