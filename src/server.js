@@ -23,11 +23,21 @@ const START_SERVER = async () => {
   // Middleware xử lí lỗi tập trung
   app.use(errorHandlingMiddleware);
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(
-      `3. Hello ${env.AUTHOR}, Back-end Server is running successfully at Host ${env.APP_HOST} and Port: ${env.APP_PORT}`
-    );
-  });
+  // Môi trường production (cụ thể hiện tại support Render.com)
+  if (env.BUILD_MODE === "production") {
+    app.listen(process.env.PORT, () => {
+      console.log(
+        `3. Production: Hello ${env.AUTHOR}, Back-end Server is running successfully at Port: ${process.env.PORT}`
+      );
+    });
+  } else {
+    // Môi trường local dev
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(
+        `3. Local DEV: Hello ${env.AUTHOR}, Back-end Server is running successfully at Host ${env.LOCAL_DEV_APP_HOST} and Port: ${env.LOCAL_DEV_APP_PORT}`
+      );
+    });
+  }
 
   // thực hiện các tác vụ clean up trước khi dừng server
   exitHook(() => {
