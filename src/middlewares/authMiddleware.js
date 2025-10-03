@@ -30,7 +30,12 @@ const isAuthorized = async (req, res, next) => {
     console.log('🚀 ~ isAuthorized ~ error:', error)
     // Nếu accessToken hết hạn(expired) ... thì trả về lỗi cho FE gọi API refreshToken
     if (error?.message?.includes('jwt expired')) {
-      next(new ApiError(StatusCodes.GONE,'Unauthorized! Token expired. Please refresh token'))
+      next(
+        new ApiError(
+          StatusCodes.GONE,
+          'Unauthorized! Token expired. Please refresh token'
+        )
+      )
       return
     }
     // Nếu accessToken không hợp lệ bất kì điều gì khác vụ hết hạn thì cứ trả về 401 cho FE gọi API signout
