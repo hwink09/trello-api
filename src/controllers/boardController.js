@@ -3,8 +3,9 @@ import { boardService } from '~/services/boardService'
 
 const createNew = async (req, res, next) => {
   try {
+    const userId = req.jwtDecoded._id
     // Điều hướng dữ liệu sang Service
-    const createdBoard = await boardService.createNew(req.body)
+    const createdBoard = await boardService.createNew(userId, req.body)
 
     // throw new ApiError(StatusCodes.BAD_REQUEST, "Hwink test error");
 
@@ -30,9 +31,10 @@ const getBoards = async (req, res, next) => {
 
 const getDetails = async (req, res, next) => {
   try {
+    const userId = req.jwtDecoded._id
     const boardId = req.params.id
     // sau này sẽ có thêm userId sẽ chỉ lấy board thuộc về user đó
-    const board = await boardService.getDetails(boardId)
+    const board = await boardService.getDetails(userId, boardId)
 
     res.status(StatusCodes.OK).json(board)
   } catch (error) {
