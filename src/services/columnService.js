@@ -1,70 +1,71 @@
-import { columnModel } from "~/models/columnModel";
-import { boardModel } from "~/models/boardModel";
-import { cardModel } from "~/models/cardModel";
-import { StatusCodes } from "http-status-codes";
-import ApiError from "~/utils/ApiError";
+/* eslint-disable no-useless-catch */
+import { columnModel } from '~/models/columnModel'
+import { boardModel } from '~/models/boardModel'
+import { cardModel } from '~/models/cardModel'
+import { StatusCodes } from 'http-status-codes'
+import ApiError from '~/utils/ApiError'
 
 const createNew = async (reqBody) => {
   try {
     const newColumn = {
-      ...reqBody,
-    };
+      ...reqBody
+    }
 
-    const createdColumn = await columnModel.createNew(newColumn);
+    const createdColumn = await columnModel.createNew(newColumn)
     const getNewColumn = await columnModel.findOneById(
       createdColumn.insertedId
-    );
+    )
 
     if (getNewColumn) {
       // Xử lí cấu trúc ở đây trước khi dữ liệu được trả về
-      getNewColumn.cards = [];
+      getNewColumn.cards = []
 
       // Cập nhật mảng columnOrderIds trong collection boards
-      await boardModel.pushColumnOrderIds(getNewColumn);
+      await boardModel.pushColumnOrderIds(getNewColumn)
     }
 
-    return getNewColumn;
+    return getNewColumn
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 const update = async (columnId, reqBody) => {
   try {
     const updateData = {
       ...reqBody,
-      updatedAt: Date.now(),
-    };
-    const updatedColumn = await columnModel.update(columnId, updateData);
+      updatedAt: Date.now()
+    }
+    const updatedColumn = await columnModel.update(columnId, updateData)
 
-    return updatedColumn;
+    return updatedColumn
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 const deleteItem = async (columnId) => {
   try {
-    const targetColumn = await columnModel.findOneById(columnId);
+    const targetColumn = await columnModel.findOneById(columnId)
 
     if (!targetColumn) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "Column not found");
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Column not found')
     }
     // Xóa Col
-    await columnModel.deleteOneById(columnId);
+    await columnModel.deleteOneById(columnId)
     // Xóa toàn bộ Cards thuộc Col
-    await cardModel.deleteManyByColumnId(columnId);
+    await cardModel.deleteManyByColumnId(columnId)
     // Xóa columnId trong mảng columnOrderIds của Board chứa nó
-    await boardModel.pullColumnOrderIds(targetColumn);
+    await boardModel.pullColumnOrderIds(targetColumn)
 
-    return { deleteResult: "Column and its Cards deleted successfully!" };
+    return { deleteResult: 'Column and its Cards deleted successfully!' }
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 export const columnService = {
   createNew,
   update,
-  deleteItem,
-};
+  deleteItem
+}

@@ -1,6 +1,5 @@
 import Joi from 'joi'
-import { get } from 'lodash'
-import { ObjectId, ReturnDocument } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE } from '~/utils/validators'
 

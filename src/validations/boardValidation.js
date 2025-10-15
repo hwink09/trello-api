@@ -1,8 +1,8 @@
-import Joi from "joi";
-import { StatusCodes } from "http-status-codes";
-import ApiError from "~/utils/ApiError";
-import { BOARD_TYPES } from "~/utils/constants";
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "~/utils/validators";
+import Joi from 'joi'
+import { StatusCodes } from 'http-status-codes'
+import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 const createNew = async (req, res, next) => {
   /**
@@ -13,28 +13,28 @@ const createNew = async (req, res, next) => {
    */
   const correctCondition = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict().messages({
-      "any.required": "Title is required",
-      "string.empty": "Title is not allowed to be empty",
-      "string.min": "Title length must be at least 3 characters long",
-      "string.max": "Title length must be less than or equal to 50 chars long",
-      "string.trim": "Title must not have leading or trailing whitespce",
+      'any.required': 'Title is required',
+      'string.empty': 'Title is not allowed to be empty',
+      'string.min': 'Title length must be at least 3 characters long',
+      'string.max': 'Title length must be less than or equal to 50 chars long',
+      'string.trim': 'Title must not have leading or trailing whitespce'
     }),
     description: Joi.string().required().min(3).max(255).trim().strict(),
     type: Joi.string()
       .valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE)
-      .required(),
-  });
+      .required()
+  })
 
   try {
     // abortEarly: false để trường hợp có nhiều lỗi validation thì trả về tất cả
-    await correctCondition.validateAsync(req.body, { abortEarly: false });
-    next();
+    await correctCondition.validateAsync(req.body, { abortEarly: false })
+    next()
   } catch (error) {
     next(
       new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
-    );
+    )
   }
-};
+}
 
 const update = async (req, res, next) => {
   // Lưu ý không dùng required khi update
@@ -44,23 +44,23 @@ const update = async (req, res, next) => {
     type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE),
     columnOrderIds: Joi.array().items(
       Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
-    ),
-  });
+    )
+  })
 
   try {
     // abortEarly: false để trường hợp có nhiều lỗi validation thì trả về tất cả
     // Update thì cho phép Unknown để không cần đẩy một số field lên
     await correctCondition.validateAsync(req.body, {
       abortEarly: false,
-      allowUnknown: true,
-    });
-    next();
+      allowUnknown: true
+    })
+    next()
   } catch (error) {
     next(
       new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
-    );
+    )
   }
-};
+}
 
 const moveCardToDifferentColumn = async (req, res, next) => {
   const correctCondition = Joi.object({
@@ -87,23 +87,23 @@ const moveCardToDifferentColumn = async (req, res, next) => {
       .required()
       .items(
         Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
-      ),
-  });
+      )
+  })
 
   try {
     await correctCondition.validateAsync(req.body, {
-      abortEarly: false,
-    });
-    next();
+      abortEarly: false
+    })
+    next()
   } catch (error) {
     next(
       new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
-    );
+    )
   }
-};
+}
 
 export const boardValidation = {
   createNew,
   update,
-  moveCardToDifferentColumn,
-};
+  moveCardToDifferentColumn
+}
