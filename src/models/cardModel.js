@@ -26,6 +26,7 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
     userEmail: Joi.string().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE),
     userAvatar: Joi.string(),
     userDisplayName: Joi.string(),
+    content: Joi.string(),
     // Chỗ này lưu ý vì dùng hàm $push để thêm comment nên không set default Date.now() được
     commentedAt: Joi.date().timestamp()
   }).default([]),
@@ -110,11 +111,30 @@ const deleteManyByColumnId = async (columnId) => {
   }
 }
 
+/**
+ * Đẩy một phần tử comment vào đầu mảng comments
+ * - Trong JS, ngược lại với push (thêm vào cuối mảng) thì unshift là thêm vào đầu mảng
+ * - Nhưng trong mongoDB thì $push là thêm vào cuối mảng, còn $position: 0 là thêm vào đầu mảng
+ */
+
+const unshiftNewComment = async (cardId, commentData) => {
+  try {
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(cardId) },
+      { $push: { comments: { $each: [commentData], $position: 0 } } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) { throw new Error(error) }
+
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
   update,
-  deleteManyByColumnId
+  deleteManyByColumnId,
+  unshiftNewComment
 }
