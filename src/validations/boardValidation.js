@@ -12,7 +12,7 @@ const createNew = async (req, res, next) => {
    * Và thông thường trong thực tế, điều tốt nhất cho hệ thống là hãy luôn validate dữ liệu ở cả BE và FE
    */
   const correctCondition = Joi.object({
-    title: Joi.string().required().min(3).max(50).trim().strict().messages({
+    title: Joi.string().required().min(3).max(50).trim().strict().message({
       'any.required': 'Title is required',
       'string.empty': 'Title is not allowed to be empty',
       'string.min': 'Title length must be at least 3 characters long',
