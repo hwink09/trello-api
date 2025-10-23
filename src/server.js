@@ -58,7 +58,7 @@ const START_SERVER = async () => {
 
 // chỉ khi kết nối đến db thành công thì mới start server back-end lên
 // Immediately-invoked / Anonymous Asnyc Function (IIFE)
-;(async () => {
+(async () => {
   try {
     console.log('1. Connecting to MongoDB CLoud Atlas...')
     await CONNECT_DB()
