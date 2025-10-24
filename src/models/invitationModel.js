@@ -92,7 +92,7 @@ const findByUser = async (userId) => {
   try {
     const queryConditions = [
       { inviteeId: new ObjectId(userId) },
-      { _destroy: false },
+      { _destroy: false }
     ]
 
     const results = await GET_DB().collection(INVITATION_COLLECTION_NAME).aggregate([
