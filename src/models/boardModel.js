@@ -67,7 +67,7 @@ const findOneById = async (boardId) => {
   }
 }
 
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, queryFilter) => {
   try {
     const queryConditions = [
       // Điều kiện 01: Board không bị xóa
@@ -84,6 +84,19 @@ const getBoards = async (userId, page, itemsPerPage) => {
         ]
       }
     ]
+
+    // Xử lí queryFilter cho từng trường hợp search board, ví dụ như search theo title
+    if (queryFilter) {
+      Object.keys(queryFilter).forEach((key) => {
+        // Có phân biệt chữ hoa chữ thường
+        // queryConditions.push({ [key]: { $regex: queryFilter[key] } })
+
+        // Không phân biệt chữ hoa chữ thường
+        queryConditions.push({ [key]: { $regex: new RegExp(queryFilter[key], 'i') } })
+      })
+
+    }
+
 
     const query = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
