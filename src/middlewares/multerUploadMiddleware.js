@@ -8,7 +8,6 @@ import {
 
 // Function kiểm tra loại nào được chấp nhận
 const customFileFilter = (req, file, callback) => {
-  console.log('file: ', file)
   // Đối với thằng multer kiểm tra kiểu file thì sử dụng mimetype
   if (!ALLOW_COMMON_FILE_TYPES.includes(file.mimetype)) {
     const errorMessage = 'File type is invalid. Only accept jpg, jpeg and png'
