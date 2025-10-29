@@ -21,8 +21,9 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   avatar: Joi.string().default(null),
   role: Joi.string().valid(...Object.values(USER_ROLES)).default(USER_ROLES.CLIENT),
 
-  // TEMPORARY CHANGE: Automatically set isActive to true to bypass email verification
-  isActive: Joi.boolean().default(true), // Changed from false to true
+  // ===== TEMPORARY CHANGE: Email verification bypassed =====
+  // isActive: Joi.boolean().default(false), // OLD: Required email verification
+  isActive: Joi.boolean().default(true), // NEW: Auto-activate accounts on registration
   verifyToken: Joi.string(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),

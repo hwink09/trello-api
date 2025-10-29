@@ -34,9 +34,9 @@ const createNew = async (reqBody) => {
     const getNewUser = await userModel.findOneById(createdUser.insertedId)
 
     // ===== TEMPORARILY BYPASSED: Email Verification Step =====
-    // NOTE: The code below is commented out to skip email verification.
-    // User accounts are now automatically activated (isActive = true by default in model).
-    // This can be re-enabled in the future by uncommenting this section.
+    // NOTE: Email verification has been disabled. Users are now automatically activated.
+    // Accounts have isActive = true by default (see userModel.js).
+    // To re-enable verification, uncomment the code below and update isActive default to false.
     
     /*
     // Gửi email cho người dùng xác thực tài khoản
