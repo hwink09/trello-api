@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser'
 import socketIo from 'socket.io'
 import http from 'http'
 import { inviteUserToBoardSocket } from '~/sockets/inviteUserToBoardSocket'
+import { WHITELIST_DOMAINS } from '~/utils/constants'
 
 const START_SERVER = async () => {
   const app = express()
@@ -37,11 +38,51 @@ const START_SERVER = async () => {
 
   // Tạo HTTP server từ Express app để tích hợp với Socket.io
   const server = http.createServer(app)
-  // Khởi tạo biến io với server và cors
-  const io = socketIo(server, { cors: corsOptions })
+
+  // Khởi tạo biến io với server và cors configuration cho Socket.IO
+  const io = socketIo(server, {
+    cors: {
+      origin: function (origin, callback) {
+        // Cho phép dev environment
+        if (env.BUILD_MODE === 'dev') {
+          return callback(null, true)
+        }
+
+        // Cho phép requests không có origin (mobile apps, server-to-server)
+        if (!origin) {
+          return callback(null, true)
+        }
+
+        // Normalize và kiểm tra whitelist
+        const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin
+        const isAllowed = WHITELIST_DOMAINS.some(domain => {
+          const normalizedDomain = domain.endsWith('/') ? domain.slice(0, -1) : domain
+          return normalizedDomain === normalizedOrigin
+        })
+
+        if (isAllowed) {
+          return callback(null, true)
+        }
+
+        callback(new Error('Not allowed by CORS'))
+      },
+      credentials: true,
+      methods: ['GET', 'POST']
+    },
+    // Cho phép cả polling và websocket transports
+    transports: ['polling', 'websocket'],
+    // Tăng timeout cho Render free tier (có thể sleep)
+    pingTimeout: 60000,
+    pingInterval: 25000
+  })
+
   io.on('connection', (socket) => {
+    console.log('New client connected:', socket.id)
     inviteUserToBoardSocket(socket)
-    // ...v.v
+
+    socket.on('disconnect', () => {
+      console.log('Client disconnected:', socket.id)
+    })
   })
 
   // Môi trường production (cụ thể hiện tại support Render.com)

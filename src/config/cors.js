@@ -10,8 +10,20 @@ export const corsOptions = {
       return callback(null, true)
     }
 
+    // Cho phép requests không có origin (mobile apps, curl, Postman, etc.)
+    if (!origin) {
+      return callback(null, true)
+    }
+
     // Kiểm tra xem origin có phải là domain được chấp nhận hay không
-    if (WHITELIST_DOMAINS.includes(origin)) {
+    // Normalize origin by removing trailing slash for comparison
+    const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin
+    const isAllowed = WHITELIST_DOMAINS.some(domain => {
+      const normalizedDomain = domain.endsWith('/') ? domain.slice(0, -1) : domain
+      return normalizedDomain === normalizedOrigin
+    })
+
+    if (isAllowed) {
       return callback(null, true)
     }
 
