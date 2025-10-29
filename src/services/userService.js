@@ -37,7 +37,7 @@ const createNew = async (reqBody) => {
     // NOTE: Email verification has been disabled. Users are now automatically activated.
     // Accounts have isActive = true by default (see userModel.js).
     // To re-enable verification, uncomment the code below and update isActive default to false.
-    
+
     /*
     // Gửi email cho người dùng xác thực tài khoản
     const verificationLink = `${WEBSITE_DOMAIN}/account/verification?token=${getNewUser.verifyToken}&email=${getNewUser.email}`
