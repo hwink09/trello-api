@@ -5,8 +5,9 @@ import ApiError from '~/utils/ApiError'
 import bcryptjs from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 import { pickUser } from '~/utils/formatters'
-import { MailerSendProvider } from '~/providers/MailerSendProvider'
-import { WEBSITE_DOMAIN } from '~/utils/constants'
+// TEMPORARILY COMMENTED: These imports are not needed while email verification is bypassed
+// import { MailerSendProvider } from '~/providers/MailerSendProvider'
+// import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { env } from '~/config/environment'
 import { JwtProvider } from '~/providers/JwtProvider'
 import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
@@ -32,6 +33,12 @@ const createNew = async (reqBody) => {
     const createdUser = await userModel.createNew(newUser)
     const getNewUser = await userModel.findOneById(createdUser.insertedId)
 
+    // ===== TEMPORARILY BYPASSED: Email Verification Step =====
+    // NOTE: The code below is commented out to skip email verification.
+    // User accounts are now automatically activated (isActive = true by default in model).
+    // This can be re-enabled in the future by uncommenting this section.
+    
+    /*
     // Gửi email cho người dùng xác thực tài khoản
     const verificationLink = `${WEBSITE_DOMAIN}/account/verification?token=${getNewUser.verifyToken}&email=${getNewUser.email}`
     const customSubject = `Email verification for ${getNewUser.email}`
@@ -51,6 +58,9 @@ const createNew = async (reqBody) => {
       subject: customSubject,
       html: htmlContent
     })
+    */
+    // ===== END OF BYPASSED VERIFICATION CODE =====
+
     // return trả về dữ liệu cho phía controller
     return pickUser(getNewUser)
   } catch (error) {
@@ -58,6 +68,9 @@ const createNew = async (reqBody) => {
   }
 }
 
+// ===== DEPRECATED: This function is kept for backward compatibility =====
+// NOTE: Email verification is currently bypassed. Users are automatically activated upon registration.
+// This function may be re-enabled in the future if email verification is required again.
 const verifyAccount = async (reqBody) => {
   try {
     // Query user trong DB
@@ -87,6 +100,7 @@ const verifyAccount = async (reqBody) => {
     throw error
   }
 }
+// ===== END OF DEPRECATED FUNCTION =====
 
 const login = async (reqBody) => {
   try {
