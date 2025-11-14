@@ -7,8 +7,6 @@ import ApiError from '~/utils/ApiError'
 const isAuthorized = async (req, res, next) => {
   // lấy accessToken từ request cookies phía client - withCredentials trong file authorizeAxios
   const clientAccessToken = req.cookies?.accessToken
-
-  // nếu không có accessToken trong request cookies
   if (!clientAccessToken) {
     next(
       new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized! No token provided')

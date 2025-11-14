@@ -24,14 +24,13 @@ const verifyAccount = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const result = await userService.login(req.body)
-
     // Xử lí trả về http-only-cookie cho phía trình duyệt
     // maxAge tính theo ms là thời gian sống của cookie (cookie khác token)
     res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      maxAge: ms('14 days') // 14 ngày
+      maxAge: ms('14 days')
     })
 
     res.cookie('refreshToken', result.refreshToken, {

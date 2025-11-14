@@ -16,12 +16,9 @@ const customFileFilter = (req, file, callback) => {
       null
     )
   }
-
-  // Nếu như kiểu file ok thì chấp nhận
   return callback(null, true)
 }
 
-// Khởi tạo function upload được bọc bởi multer
 const upload = multer({
   limits: { fileSize: LIMIT_COMMON_FILE_SIZE },
   fileFilter: customFileFilter

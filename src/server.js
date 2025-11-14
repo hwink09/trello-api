@@ -12,19 +12,6 @@ import socketIo from 'socket.io'
 import http from 'http'
 import { inviteUserToBoardSocket } from '~/sockets/inviteUserToBoardSocket'
 import { WHITELIST_DOMAINS } from '~/utils/constants'
-import swaggerUi from 'swagger-ui-express'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// Read swagger.json dynamically
-const swaggerDocument = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../swagger.json'), 'utf8')
-)
 
 const START_SERVER = async () => {
   const app = express()
@@ -42,12 +29,6 @@ const START_SERVER = async () => {
 
   // Enable req.body json data
   app.use(express.json())
-
-  // Swagger API Documentation
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Trello Clone API Documentation'
-  }))
 
   // use API V1
   app.use('/v1', APIs_V1)
