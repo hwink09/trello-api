@@ -12,6 +12,8 @@ import socketIo from 'socket.io'
 import http from 'http'
 import { inviteUserToBoardSocket } from '~/sockets/inviteUserToBoardSocket'
 import { WHITELIST_DOMAINS } from '~/utils/constants'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from '../swagger.json'
 
 const START_SERVER = async () => {
   const app = express()
@@ -29,6 +31,12 @@ const START_SERVER = async () => {
 
   // Enable req.body json data
   app.use(express.json())
+
+  // Swagger API Documentation
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Trello Clone API Documentation'
+  }))
 
   // use API V1
   app.use('/v1', APIs_V1)
