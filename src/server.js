@@ -13,7 +13,18 @@ import http from 'http'
 import { inviteUserToBoardSocket } from '~/sockets/inviteUserToBoardSocket'
 import { WHITELIST_DOMAINS } from '~/utils/constants'
 import swaggerUi from 'swagger-ui-express'
-import swaggerDocument from '../swagger.json'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Read swagger.json dynamically
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../swagger.json'), 'utf8')
+)
 
 const START_SERVER = async () => {
   const app = express()
